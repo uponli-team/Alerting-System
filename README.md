@@ -123,67 +123,6 @@ Includes:
 
 ---
 
-## 🌙 Quiet Hours Logic
-
-Configured inside `Workflow Configuration` node:
-
-```
-quietHoursStart = 22
-quietHoursEnd = 7
-```
-
-If current hour:
-- Less than 7  
-OR  
-- Greater than or equal to 22  
-
-➡ Alerts are blocked.
-
----
-
-## ⚙️ Configuration Example
-
-Inside the Workflow Configuration node:
-
-```json
-{
-  "quietHoursStart": 22,
-  "quietHoursEnd": 7,
-  "telegramChatId": "YOUR_CHAT_ID",
-  "catalystApiUrl": "https://financialmodelingprep.com/api/v3/earning_calendar",
-  "breakoutApiUrl": "https://finnhub.io/api/v1/scan/technical"
-}
-```
-
----
-
-## 🔐 Setup Instructions
-
-### 1️⃣ Create Telegram Bot
-- Open Telegram  
-- Search `@BotFather`
-- Create bot  
-- Copy Bot Token  
-
-### 2️⃣ Configure n8n
-- Add Telegram Trigger node
-- Add Telegram credentials
-- Paste bot token
-- Activate workflow
-
-### 3️⃣ Add API Keys
-
-Replace:
-
-```
-token=YOUR_FINNHUB_API_KEY
-```
-
-Add your:
-- Finnhub API key
-- FinancialModelingPrep API key
-
----
 
 ## 📦 How It Works
 
@@ -200,17 +139,6 @@ Add your:
 
 ---
 
-## 🚀 Future Improvements
-
-- Watchlist per user
-- User subscription preferences
-- Database storage (Postgres)
-- Volume + RSI breakout confirmation
-- Rate limiting
-- Multi-user support
-- Web dashboard
-
----
 
 ## 🧩 Importing Workflow
 
@@ -220,9 +148,3 @@ Add your:
 4. Save  
 5. Add credentials  
 6. Activate  
-
----
-
-## 📜 License
-
-MIT License
