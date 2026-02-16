@@ -33,18 +33,6 @@ All alerts are delivered directly to Telegram in formatted Markdown messages.
 
 ---
 
-## 🔌 APIs Used
-
-### 1️⃣ Finnhub
-- General News  
-- Earnings Calendar  
-- Technical Scan  
-
-### 2️⃣ Financial Modeling Prep
-- Earnings Calendar Data  
-
----
-
 ## 🔄 Workflow Architecture
 
 ```
@@ -72,8 +60,6 @@ Filter        Filter          Revenue/EPS Filter
      ↓        ↓        ↓
  Telegram  Telegram  Telegram
 ```
-
----
 
 ## 🚨 Alert Types
 
@@ -109,20 +95,6 @@ Includes:
 - Quarter info
 
 ---
-
-### 🚀 Breakout Alert
-
-Triggered when:
-- Headline equals "breakout"
-
-Includes:
-- Symbol
-- Signal info
-- Time
-- TradingView link
-
----
-
 
 ## 📦 How It Works
 
