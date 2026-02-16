@@ -1,0 +1,1024 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "url": "=https://finnhub.io/api/v1/news?category=general&token=d626d1pr01qvmk0ka7sgd626d1pr01qvmk0ka7t0",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        },
+        "infoMessage": "This node fetches stock catalyst events like earnings reports, FDA approvals, product launches, partnerships, and other market-moving events. Configure the catalystApiUrl in Workflow Configuration to point to your catalyst data API endpoint."
+      },
+      "id": "e32d0be9-1c23-45af-ac4a-f65dfccfcf67",
+      "name": "Fetch Catalyst Data",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        816,
+        512
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://finnhub.io/api/v1/news?category=general&token=d626d1pr01qvmk0ka7sgd626d1pr01qvmk0ka7t0",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        },
+        "infoMessage": "Fetches technical breakout pattern data for stocks"
+      },
+      "id": "a0f83d83-e095-4b2d-86b9-80d8aec3ec41",
+      "name": "Fetch Breakout Data",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        768,
+        912
+      ]
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "id": "36be2e75-4c8b-4c1e-82b6-0af5c40b38b8",
+      "name": "Merge All Alert Data",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1664,
+        672
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "5af3922b-2b5b-4795-80ed-0a2d90228623",
+                    "leftValue": "={{ $json.alertType || \"unknown\" }}",
+                    "rightValue": "=catalyst",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Potential News"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "0a44ccf6-0c58-4794-b894-ee0f510fedd5",
+                    "leftValue": "={{ $json.alertType || \"unknown\" }}",
+                    "rightValue": "earnings",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Earnings Calendar"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "ba66accb-5db4-4558-90d7-2d02ca60028d",
+                    "leftValue": "={{ $json.alertType || \"unknown\" }}",
+                    "rightValue": "breakout",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Breakout Alert"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a87ac1aa-8b05-463b-9896-d016164ab8b6",
+      "name": "Route by Alert Type",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        2608,
+        672
+      ],
+      "alwaysOutputData": true,
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "18185c1f-2f6a-4744-b42b-27b12350ea0f",
+              "name": "alertType",
+              "value": "catalyst",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1232,
+        512
+      ],
+      "id": "e3fe3436-79b7-4d18-a41d-82f95de4532a",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2faf44c3-51b4-48fc-88a6-9b68718f20c8",
+              "name": "alertType",
+              "value": "breakout",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1216,
+        912
+      ],
+      "id": "a7dd2f4c-0430-420a-81e6-736e57355f55",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "messageText",
+              "value": "={{ $json.message.text }}",
+              "type": "string"
+            },
+            {
+              "id": "id-2",
+              "name": "chatId",
+              "value": "={{ $json.message.chat.id }}",
+              "type": "number"
+            },
+            {
+              "id": "id-3",
+              "name": "userId",
+              "value": "={{ $json.message.from.id }}",
+              "type": "number"
+            },
+            {
+              "id": "id-4",
+              "name": "userName",
+              "value": "={{ $json.message.from.first_name }}",
+              "type": "string"
+            },
+            {
+              "id": "id-5",
+              "name": "messageDate",
+              "value": "={{ $json.message.date }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a640a2c4-e8e7-45cd-9de6-55227b007192",
+      "name": "Extract Message Data1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        720
+      ]
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "id": "89a99eef-d886-473a-82d8-7b9e07444341",
+      "name": "Telegram Bot Trigger1",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        720
+      ],
+      "webhookId": "f4dcce8f-e884-438a-a78f-c4b04fd9eec9",
+      "credentials": {
+        "telegramApi": {
+          "id": "xiFt1QyZBBIeMSEs",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "quietHoursStart",
+              "value": 22,
+              "type": "number"
+            },
+            {
+              "id": "id-2",
+              "name": "quietHoursEnd",
+              "value": 7,
+              "type": "number"
+            },
+            {
+              "id": "id-3",
+              "name": "telegramChatId",
+              "value": "2114479571",
+              "type": "string"
+            },
+            {
+              "id": "id-4",
+              "name": "catalystApiUrl",
+              "value": "https://financialmodelingprep.com/api/v3/earning_calendar",
+              "type": "string"
+            },
+            {
+              "id": "id-5",
+              "name": "breakoutApiUrl",
+              "value": "https://finnhub.io/api/v1/scan/technical",
+              "type": "string"
+            },
+            {
+              "id": "id-6",
+              "name": "watchlistApiUrl",
+              "value": "SCANNER_MODE",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "24b89039-5646-4ea2-99b0-827efa177542",
+      "name": "Workflow Configuration",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        448,
+        720
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "id-1",
+              "leftValue": "={{ parseInt($json.currentHour) }}",
+              "rightValue": "={{ $('Workflow Configuration').item.json.quietHoursEnd }}",
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            },
+            {
+              "id": "id-2",
+              "leftValue": "={{ parseInt($json.currentHour) }}",
+              "rightValue": "={{ $('Workflow Configuration').item.json.quietHoursStart }}",
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "5c87e395-deb1-4d9f-8010-d1323a531ba9",
+      "name": "IF: Within Quiet Hours?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2176,
+        672
+      ],
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2c329b85-8702-495c-9ab5-71af853e0f0c",
+              "name": "currentHour",
+              "value": "={{ $now.format('H') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1872,
+        672
+      ],
+      "id": "2d466a0e-ecda-412b-b314-fcee8cd93fca",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "0319eebf-1284-4465-b7c1-25b7ac3e3348",
+              "leftValue": "={{ $json.headline }}",
+              "rightValue": "fda",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "a377c265-d551-4f51-a306-bd8a163c95a7",
+              "leftValue": "={{ $json.headline }}",
+              "rightValue": "partnership",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "e5abc381-1937-4901-8c5c-72afd285a8d6",
+              "leftValue": "={{ $json.headline }}",
+              "rightValue": "earnings",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "9e1900d0-e263-4aca-9233-f1b9a198fc04",
+              "leftValue": "={{ $json.headline }}",
+              "rightValue": "profit",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        1008,
+        512
+      ],
+      "id": "ae29d034-23d9-4722-ba3c-ad9a66d935b6",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "994cea40-c25f-4d90-8356-3b98c3ed08bd",
+              "leftValue": "={{ $json.headline }}",
+              "rightValue": "breakout",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        992,
+        912
+      ],
+      "id": "a11a4975-f5af-403a-9c64-97f6fc642e8c",
+      "name": "Filter1"
+    },
+    {
+      "parameters": {
+        "url": "=https://finnhub.io/api/v1/calendar/earnings?from={{ $now.plus({days: 3}).format('yyyy-MM-dd') }}&to={{ $now.plus({days: 7}).format('yyyy-MM-dd') }}&token=d626d1pr01qvmk0ka7sgd626d1pr01qvmk0ka7t0",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        800,
+        720
+      ],
+      "id": "cd466bc6-0529-4391-8753-ee37b6d9fc8e",
+      "name": "Earnings Catalyst"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "78124ca4-1f7a-4e85-be18-60bb87ecf510",
+              "leftValue": "={{ $json.revenueEstimate }}",
+              "rightValue": 500000000,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            },
+            {
+              "id": "319e7e24-ab06-4658-a0a2-cf711de32ad6",
+              "leftValue": "={{ $json.epsEstimate }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        1200,
+        720
+      ],
+      "id": "04ae642a-ede3-4c9f-9991-768b1d18d951",
+      "name": "Filter2"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "earningsCalendar",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1008,
+        720
+      ],
+      "id": "d266da9d-21fa-45cb-933e-72f8cd730f86",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5d578eab-e404-406d-969a-ca5f9d8a2682",
+              "name": "alertType",
+              "value": "earnings",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1392,
+        720
+      ],
+      "id": "f5f068b3-ed07-44d8-ae35-2ee986354469",
+      "name": "Edit Fields4"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "message",
+              "value": "={{ `🔥 *POTENTIAL MARKET CATALYST* 🔥\n━━━━━━━━━━━━━━━━━━\n\n📰 *HEADLINE:* _${$json.headline}_\n🏢 *SOURCE:* ${$json.source}\n\n📅 *PUBLISHED:* ${new Date($json.datetime * 1000).toLocaleString([], {month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit'})}\n\n💡 *SUMMARY:*\n${$json.summary ? $json.summary.substring(0, 200) + '...' : 'New market-moving news detected.'}\n\n📊 [Analyze Sector on TradingView](https://www.tradingview.com/chart/)\n━━━━━━━━━━━━━━━━━━\n🔗 [Read Full Story](${$json.url})` }}",
+              "type": "string"
+            },
+            {
+              "id": "id-2",
+              "name": "chatId",
+              "value": "={{ $('Extract Message Data1').item.json.chatId }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e71ed31c-d163-429f-9209-d3b1b6ff2f72",
+      "name": "Potential News",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2992,
+        416
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "196a5717-f05d-48bc-abab-f9b95ed45dda",
+              "name": "chatId",
+              "value": "={{ $('Extract Message Data1').item.json.userId }}",
+              "type": "string"
+            },
+            {
+              "id": "379e01e2-19cb-4607-ae4d-8a2b0d8dd336",
+              "name": "symbol",
+              "value": "={{ $('Filter2').item.json.symbol }}",
+              "type": "string"
+            },
+            {
+              "id": "8856cb8a-cc70-46df-89d1-ac92f1b7f3d3",
+              "name": "date",
+              "value": "={{ $('Filter2').item.json.date }}",
+              "type": "string"
+            },
+            {
+              "id": "5cfa5cc7-a0bb-4b55-9c63-1236c266f56d",
+              "name": "eps",
+              "value": "={{ $('Filter2').item.json.epsEstimate }}",
+              "type": "number"
+            },
+            {
+              "id": "42e7718c-5160-4f95-98c2-f8c4188953d0",
+              "name": "revenueEst",
+              "value": "={{ $('Filter2').item.json.revenueEstimate }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2992,
+        672
+      ],
+      "id": "f142f639-c1c0-40a6-819b-4a8eb484e932",
+      "name": "Earnings Calendar"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "message",
+              "value": "={{ `🚀 *MARKET BREAKOUT DETECTED* 🚀\n━━━━━━━━━━━━━━━━━━\n🎫 *STOCK:* ${$json.symbol || $json.related || 'Market'}\n📰 *SIGNAL:* _${$json.headline || 'Price Breakout Alert'}_\n\n📅 *TIME:* ${new Date($json.datetime * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}\n\n💡 *ACTION:*\nPrice has crossed a major level. Check volume and RSI for confirmation.\n\n📊 [Analyze ${$json.symbol || $json.related} on TradingView](https://www.tradingview.com/symbols/${$json.symbol || $json.related || 'SPY'}/)\n━━━━━━━━━━━━━━━━━━\n🔗 [View Technical Chart](${$json.url || 'https://www.tradingview.com'})` }}",
+              "type": "string"
+            },
+            {
+              "id": "id-2",
+              "name": "chatId",
+              "value": "={{ $('Extract Message Data1').item.json.chatId }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "81f54270-cca5-471c-939d-ab035cfc7dad",
+      "name": "Breakout Alert",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2992,
+        896
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chatId }}",
+        "text": "={{ $json.message }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "fb0dfb84-20ab-43e2-8e1d-4087e34dfad6",
+      "name": "Send Breakout Alert1",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        3344,
+        896
+      ],
+      "webhookId": "0faa51cc-3b4e-4225-9ab1-69a347916ca3",
+      "alwaysOutputData": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "xiFt1QyZBBIeMSEs",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chatId }}",
+        "text": "={{ `📅 *UPCOMING EARNINGS ALERT* 📅\n━━━━━━━━━━━━━━━━━━\n🎫 *STOCK:* ${$json.symbol}\n⏰ *TIME:* ${($json.hour || \"\").toUpperCase() === 'AMC' ? 'After Market Close' : 'Before Market Open'}\n\n💰 *REVENUE EST:* $${($json.revenueEst / 1000000).toFixed(2)}M\n💵 *EPS EST:* ${$json.eps || 'N/A'}\n\n🗓️ *DATE:* ${$json.date}\n📊 *QUARTER:* Q${$json.quarter || '4'} ${$json.year || '2025'}\n\n📈 [View ${$json.symbol} Earnings History](https://www.tradingview.com/symbols/${$json.symbol}/)\n━━━━━━━━━━━━━━━━━━` }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        3344,
+        672
+      ],
+      "id": "414f7ab3-8994-4e8b-9c80-90226827426d",
+      "name": "Send Earnings Calendar",
+      "webhookId": "37e4bf01-7870-44ee-b599-2cf12abbe0cf",
+      "alwaysOutputData": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "xiFt1QyZBBIeMSEs",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chatId }}",
+        "text": "={{ $json.message }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "12c64b17-3245-424a-aa12-398cad700bc5",
+      "name": "Send Potential News",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        3344,
+        416
+      ],
+      "webhookId": "f44c13cf-6c9f-4727-982f-e6b8233d8ef4",
+      "alwaysOutputData": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "xiFt1QyZBBIeMSEs",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Fetch Catalyst Data": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Breakout Data": {
+      "main": [
+        [
+          {
+            "node": "Filter1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge All Alert Data": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route by Alert Type": {
+      "main": [
+        [
+          {
+            "node": "Potential News",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Earnings Calendar",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Breakout Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Merge All Alert Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Merge All Alert Data",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Extract Message Data1": {
+      "main": [
+        [
+          {
+            "node": "Workflow Configuration",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Bot Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Extract Message Data1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Workflow Configuration": {
+      "main": [
+        [
+          {
+            "node": "Fetch Breakout Data",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Fetch Catalyst Data",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Earnings Catalyst",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF: Within Quiet Hours?": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Route by Alert Type",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "IF: Within Quiet Hours?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Earnings Catalyst": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Filter2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields4": {
+      "main": [
+        [
+          {
+            "node": "Merge All Alert Data",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Potential News": {
+      "main": [
+        [
+          {
+            "node": "Send Potential News",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Earnings Calendar": {
+      "main": [
+        [
+          {
+            "node": "Send Earnings Calendar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Breakout Alert": {
+      "main": [
+        [
+          {
+            "node": "Send Breakout Alert1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Breakout Alert1": {
+      "main": [
+        []
+      ]
+    },
+    "Send Potential News": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "765a65d84eb616ff8a8972ded19e3755e9f5a1a5ae558aba909c40da42bc9e33"
+  }
+}
