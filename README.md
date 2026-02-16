@@ -1,4 +1,4 @@
-# 📈 n8n Telegram Stock Alert Bot
+# 📈 Alerting-System
 
 Automated Telegram alerting system built with **n8n** for:
 
